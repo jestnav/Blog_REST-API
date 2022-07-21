@@ -1,3 +1,4 @@
+-----
 1. Al crear la aplicacion, como spring boot lleva tomcat embebido, aparece el mismo problema que ocurria cuando instale tomcat para trabajar con JavaEE y con Spring (no boot) -> puerto 8080 ocupado
     
     --> Solucion 1 y la mas facil
@@ -5,5 +6,12 @@
 
     --> Solucion 2
         Listar el puerto 8080 del ordenador y ver que proceso esta ocupando el puerto -> matar el proceso
+
+-----
+2. Al crear automaticamente la primera tabla (posts) usando las anotaciones desde spring, la conexion con la base de datos era correcta (no lanzaba errores) pero no creaba la tabla. He probado a borrar la DB y si que lanzaba error por lo que el problema era simplemente que no creaba la tabla
+    
+    --> Solucion
+        El error estaba en el fichero de application.properties, la linea donde se indica spring.jpa.hibernate.ddl.auto = update -> esta mal escrita, es: spring.jpa.hibernate.ddl-auto = update -> fallaba un . era un -
+
 
 
