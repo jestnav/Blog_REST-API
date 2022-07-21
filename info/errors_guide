@@ -1,0 +1,9 @@
+1. Al crear la aplicacion, como spring boot lleva tomcat embebido, aparece el mismo problema que ocurria cuando instale tomcat para trabajar con JavaEE y con Spring (no boot) -> puerto 8080 ocupado
+    
+    --> Solucion 1 y la mas facil
+        Anyadir una linea al fichero application.properties: server.port=8080 -> cambia el puerto por defecto en el que se ejecuta la aplicacion 
+
+    --> Solucion 2
+        Listar el puerto 8080 del ordenador y ver que proceso esta ocupando el puerto -> matar el proceso
+
+
