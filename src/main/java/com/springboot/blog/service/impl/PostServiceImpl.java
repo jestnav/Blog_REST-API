@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.springboot.blog.entity.Post;
+import com.springboot.blog.exception.ResourceNotFoundException;
 import com.springboot.blog.payload.PostDto;
 import com.springboot.blog.repository.PostRepository;
 import com.springboot.blog.service.PostService;
@@ -40,6 +41,27 @@ public class PostServiceImpl implements PostService{
 		return posts.stream().map(post -> mapToDTO(post)).collect(Collectors.toList());
 	}
 	
+	@Override
+	public PostDto getPostById(long id) {
+		Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+		
+		return mapToDTO(post);
+	}
+	
+	@Override
+	public PostDto updatePost(PostDto postDto, long id) {
+		Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+		
+		post.setTitle(postDto.getTitle());
+		post.setDescription(postDto.getDescription());
+		post.setContent(postDto.getContent());
+		
+		Post updatedPost = postRepository.save(post);
+		
+		return mapToDTO(updatedPost);
+	}
+	
+	
 	// convert entity to DTO
 	private PostDto mapToDTO(Post post) {
 		PostDto postDto = new PostDto();
@@ -60,4 +82,6 @@ public class PostServiceImpl implements PostService{
 		
 		return post;
 	}
+	
+	
 }
