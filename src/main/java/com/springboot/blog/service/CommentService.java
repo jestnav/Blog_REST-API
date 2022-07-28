@@ -10,8 +10,12 @@ import com.springboot.blog.payload.CommentDto;
 public interface CommentService {
 	
 	CommentDto createComment(long postId, CommentDto commentDto);
+	
 	CommentDto getCommentById(Long postId, Long commentId);
+	
 	CommentDto updateComment(Long postId, long commentId, CommentDto commentRequest);
+	
+	void deleteComment(Long postId, Long commentId);
 	
 	List<CommentDto> getCommentsByPostId(long postId);
 }
