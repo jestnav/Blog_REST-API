@@ -24,3 +24,16 @@ Create the base clases for starting to test the first endpoint: (PostController,
     
     ==> Solucion
         Aunque anyadimos la dependencia .jar al proyecto con maven, si es la primera vez que utilizamos lombok es necesario instalarlo en el ide -> ejecutar en la linea de comandos: sudo java -jar /home/jordi/.m2/repository/org/projectlombok/lombok/1.18.24/lombok-1.18.24.jar (es la ruta real donde se encuentra la libreria del proyecto), aunque solo este referenciada para este proyecto, cuando se instale en eclipse se podra utilizar para los demas proyectos sin tener que lanzar el comando, solamente importando la libreria con maven
+
+-----
+-----
+4. Cuando se crea la interfaz UserRepository que extiende de JpaRepository, los NOMBRES de los metodos de de la interfaz son los que spring lee para encontrar y mapear las propiedades en la entidad User:
+    findByUserName es findBy + nombre exacto de la propiedad incluso respetando mayusculas(menos la primera letra despues del By que siempre sera mayuscula) ==> si la propiedad en la entidad User se llama "userName" el metodo de UserRepository sera:
+        findByUsername(String username) -> INCORRECTO (ver la palabra Username)
+        findByUserName(String username) -> CORRECTO (ver la palabra UserName)
+
+IMPORTANTE -> Esto es solamente para que se entienda, pero el username del usuario ha de ser siempre 'username' no 'userName', porque en este caso UserRepository extiende de JpaRepository, cuando utilizamos el metodo findByUsername estamos usando un metodo ya creado por spring que actua por detras. 
+
+Si usamos findByUserName (INCORRECTO) y la variable de la entidad User se llama userName la aplicacion no dara error pero nunca podra mapear correctamente las credenciales cuando introduzcamos usuario y contrasenya y aunque esten correctas indicara Bad Credentials. 
+
+Podemos observar que si nombramos a la variable de la entidad User 'userName' cuando se cree la tabla en la base de datos el nombre de la columna sera user_name no username que es lo que necesita spring para mapear
