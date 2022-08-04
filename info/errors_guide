@@ -37,3 +37,9 @@ IMPORTANTE -> Esto es solamente para que se entienda, pero el username del usuar
 Si usamos findByUserName (INCORRECTO) y la variable de la entidad User se llama userName la aplicacion no dara error pero nunca podra mapear correctamente las credenciales cuando introduzcamos usuario y contrasenya y aunque esten correctas indicara Bad Credentials. 
 
 Podemos observar que si nombramos a la variable de la entidad User 'userName' cuando se cree la tabla en la base de datos el nombre de la columna sera user_name no username que es lo que necesita spring para mapear
+
+
+-----
+-----
+5. En la clase SecurityConfig (donde declaramos las reglas de seguridad para el login...), en el metodo configure es muy importante declarar bien la ruta en el .anthMatchers("/api/auth/**").permitAll()
+    Me faltaba por poner la primera barra antes de api y por eso no me realizaba bien el bypass para realizar el login desde /api/auth/signin
