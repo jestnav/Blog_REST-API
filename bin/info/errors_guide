@@ -1,0 +1,45 @@
+-----
+-----
+1. Al crear la aplicacion, como spring boot lleva tomcat embebido, aparece el mismo problema que ocurria cuando instale tomcat para trabajar con JavaEE y con Spring (no boot) -> puerto 8080 ocupado
+    
+    ==> Solucion 1 y la mas facil
+        Anyadir una linea al fichero application.properties: server.port=8080 -> cambia el puerto por defecto en el que se ejecuta la aplicacion 
+
+    ==> Solucion 2
+        Listar el puerto 8080 del ordenador y ver que proceso esta ocupando el puerto -> matar el proceso
+
+-----
+-----
+2. Al crear automaticamente la primera tabla (posts) usando las anotaciones desde spring, la conexion con la base de datos era correcta (no lanzaba errores) pero no creaba la tabla. He probado a borrar la DB y si que lanzaba error por lo que el problema era simplemente que no creaba la tabla
+    
+    ==> Solucion
+        El error estaba en el fichero de application.properties, la linea donde se indica spring.jpa.hibernate.ddl.auto = update -> esta mal escrita, es: spring.jpa.hibernate.ddl-auto = update -> fallaba un . era un -
+
+
+Create the base clases for starting to test the first endpoint: (PostController, REsourceNotFoundException, PostDto, PostRepository, PostService, PosrServiceImpl)
+
+-----
+-----
+3. La libreria lombok no generaba los getters y setters automaticamente, el proyecto mostraba errores porque no podia acceder a getters y setters (lombok genera automaticamente los getters y setters usando la anotacion @Data)
+    
+    ==> Solucion
+        Aunque anyadimos la dependencia .jar al proyecto con maven, si es la primera vez que utilizamos lombok es necesario instalarlo en el ide -> ejecutar en la linea de comandos: sudo java -jar /home/jordi/.m2/repository/org/projectlombok/lombok/1.18.24/lombok-1.18.24.jar (es la ruta real donde se encuentra la libreria del proyecto), aunque solo este referenciada para este proyecto, cuando se instale en eclipse se podra utilizar para los demas proyectos sin tener que lanzar el comando, solamente importando la libreria con maven
+
+-----
+-----
+4. Cuando se crea la interfaz UserRepository que extiende de JpaRepository, los NOMBRES de los metodos de de la interfaz son los que spring lee para encontrar y mapear las propiedades en la entidad User:
+    findByUserName es findBy + nombre exacto de la propiedad incluso respetando mayusculas(menos la primera letra despues del By que siempre sera mayuscula) ==> si la propiedad en la entidad User se llama "userName" el metodo de UserRepository sera:
+        findByUsername(String username) -> INCORRECTO (ver la palabra Username)
+        findByUserName(String username) -> CORRECTO (ver la palabra UserName)
+
+IMPORTANTE -> Esto es solamente para que se entienda, pero el username del usuario ha de ser siempre 'username' no 'userName', porque en este caso UserRepository extiende de JpaRepository, cuando utilizamos el metodo findByUsername estamos usando un metodo ya creado por spring que actua por detras. 
+
+Si usamos findByUserName (INCORRECTO) y la variable de la entidad User se llama userName la aplicacion no dara error pero nunca podra mapear correctamente las credenciales cuando introduzcamos usuario y contrasenya y aunque esten correctas indicara Bad Credentials. 
+
+Podemos observar que si nombramos a la variable de la entidad User 'userName' cuando se cree la tabla en la base de datos el nombre de la columna sera user_name no username que es lo que necesita spring para mapear
+
+
+-----
+-----
+5. En la clase SecurityConfig (donde declaramos las reglas de seguridad para el login...), en el metodo configure es muy importante declarar bien la ruta en el .anthMatchers("/api/auth/**").permitAll()
+    Me faltaba por poner la primera barra antes de api y por eso no me realizaba bien el bypass para realizar el login desde /api/auth/signin
