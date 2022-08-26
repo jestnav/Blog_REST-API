@@ -43,3 +43,32 @@ Podemos observar que si nombramos a la variable de la entidad User 'userName' cu
 -----
 5. En la clase SecurityConfig (donde declaramos las reglas de seguridad para el login...), en el metodo configure es muy importante declarar bien la ruta en el .anthMatchers("/api/auth/**").permitAll()
     Me faltaba por poner la primera barra antes de api y por eso no me realizaba bien el bypass para realizar el login desde /api/auth/signin
+
+
+-----
+-----
+6. Cuando la aplicacion estaba terminada y refactorizada (las clases deprecated sustituidas) cree un cliente (frontend) para poder conectarme desde el, extraer y mostrar la informacion en el navegador, pero aparecia solicitud CORS denegada -> CORS se crea para evitar que cuando realizamos peticiones cruzadas desde un cliente a un servidor a traves del navegador, como el navegador almacena las cookies y el local storage, se podria hackear creando un cliente que realizara peticiones a un servidor de un banco utilizando las credenciales almacenadas en el navegador.	
+
+En el servidor hay que configurar desde que origenes se permiten las peticiones CORS
+	--- En la clase SecurityConfig anyadir .cors() y crear el filtro. .cors() automaticamente llamara al bean corsConfigurationSource
+		...
+	@Bean
+	protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    	http
+    			.cors()
+    		.and()
+			...
+	}
+
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(Arrays.asList("http://localhost:9001"));
+		configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "OPTIONS"));
+		configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
+        configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
+	---

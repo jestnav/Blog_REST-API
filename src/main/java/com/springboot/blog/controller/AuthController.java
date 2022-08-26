@@ -10,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,7 @@ import com.springboot.blog.security.JwtTokenProvider;
 import com.springboot.blog.entity.Role;
 import com.springboot.blog.entity.User;
 
+//@CrossOrigin(origins= {"*"}, maxAge = 4800, allowCredentials = "false" )
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -42,7 +44,8 @@ public class AuthController {
 	
 	@Autowired
 	private JwtTokenProvider tokenProvider;
-	
+
+	//@CrossOrigin(origins = "http://localhost:9001")
 	@PostMapping("/signin")
 	public ResponseEntity<JWTAuthResponse> authenticateUser(@RequestBody LoginDto loginDto){
 		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
